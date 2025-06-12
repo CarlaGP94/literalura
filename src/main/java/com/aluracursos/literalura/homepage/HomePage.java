@@ -56,13 +56,32 @@ public class HomePage {
         }
     }
 
+    public GeneralData ConsumingAPI(String urlSearch, String userInput){
+        var json = consumingAPI.getData(URL_BASE + urlSearch + userInput.replace(" ","%20"));
+        var data = converter.getData(json, GeneralData.class);
+
+        return data;
+    }
+
+    public GeneralData ConsumingAPI(String urlStartYear, Integer userInput1, String urlEndYear, Integer userInput2){
+        var json = consumingAPI.getData(URL_BASE + urlStartYear + userInput1 + urlEndYear + userInput2);
+        var data = converter.getData(json, GeneralData.class);
+
+        return data;
+    }
+
+    public GeneralData ConsumingAPI(String urlBase, String urlLanguages, String userInput){
+        var json = consumingAPI.getData(urlBase + urlLanguages + userInput.toLowerCase());
+        var data = converter.getData(json, GeneralData.class);
+
+        return data;
+    }
+
     private void findBookByTitle() {
         System.out.println("Ingrese 5 dígitos del nombre del libro: (ej: cinde = cinderella)");
         var userBook = keyboard.nextLine();
 
-        // Consumo de la API
-        var json = consumingAPI.getData(URL_BASE + URL_SEARCH + userBook.replace(" ","%20"));
-        var data = converter.getData(json, GeneralData.class);
+        GeneralData data = ConsumingAPI(URL_SEARCH,userBook);
 
         // Verifica que las listas no estén en "null" o vacías
         if(data.booksList() != null && !data.booksList().isEmpty()){
@@ -120,9 +139,7 @@ public class HomePage {
         var endYear = keyboard.nextInt();
         keyboard.nextLine();
 
-        // Consumo de la API
-        var json = consumingAPI.getData(URL_BASE + URL_START_YEAR + startYear + URL_END_YEAR + endYear);
-        var data = converter.getData(json, GeneralData.class);
+        GeneralData data = ConsumingAPI(URL_START_YEAR, startYear, URL_END_YEAR, endYear);
 
         // Tomará los primeros 5 resultados.
         List<BookData> theData = data.booksList().stream()
@@ -159,8 +176,7 @@ public class HomePage {
 
         var userLanguage = keyboard.nextLine();
 
-        var json = consumingAPI.getData(URL_BASE + URL_LANGUAGES + userLanguage.toLowerCase());
-        var data = converter.getData(json, GeneralData.class);
+        GeneralData data = ConsumingAPI(URL_BASE,URL_LANGUAGES,userLanguage);
 
         // Tomará los primeros 5 resultados.
         List<BookData> bookByLanguage = data.booksList().stream()
