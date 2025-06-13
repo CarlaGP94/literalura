@@ -5,6 +5,7 @@ import com.aluracursos.literalura.repository.IAuthorRepository;
 import com.aluracursos.literalura.repository.IBookRepository;
 import com.aluracursos.literalura.service.APIConsumption;
 import com.aluracursos.literalura.service.ConvertsData;
+import org.antlr.v4.runtime.InputMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -83,7 +84,7 @@ public class HomePage {
 
     // Límite para el resultado del consumo de la API - n primeras coincidencias.
     public List<BookData> resultOfCosumingAPI (GeneralData data,Integer limitList){
-        List<BookData> result = null;
+        List<BookData> result = new ArrayList<>();
 
         // Siempre verifica primero que las listas no estén vacías o null.
         if (data.booksList() != null && !data.booksList().isEmpty()) {
@@ -99,28 +100,24 @@ public class HomePage {
 
     // Verificación de la existencia o no, del autor en el repositorio.
     public List<Author> saveAuthor(List<BookData> bookDataList) {
-
         var authorFound = new ArrayList<Author>();
 
-            for (BookData bookAPI : bookDataList) {
-                if (bookAPI.authorList() != null && !bookAPI.authorList().isEmpty()) {
-                    AuthorData authorAPI = bookAPI.authorList().get(0);
+        for (BookData bookAPI : bookDataList) {
+            if (bookAPI.authorList() != null && !bookAPI.authorList().isEmpty()) {
+                AuthorData authorAPI = bookAPI.authorList().get(0);
 
-                    // Verifica si ya existe en la base de datos o hay que agregarlo.
-                    Optional<Author> existingAuthor = authorRepository.findByCompleteName(authorAPI.completeName());
+                // Verifica si ya existe en la base de datos o hay que agregarlo.
+                Optional<Author> existingAuthor = authorRepository.findByCompleteName(authorAPI.completeName());
 
-                    Author authorReferent = null;
-                    if (existingAuthor.isPresent()) {
-                        authorReferent = existingAuthor.get();
-                        authorFound.add(authorReferent);
-                    } else {
-                        authorReferent = new Author(authorAPI);
-                        authorRepository.save(authorReferent); // Guarda al author
-                        authorFound.add(authorReferent);
-                    }
+                if (existingAuthor.isPresent()) {
+                    authorFound.add(existingAuthor.get());
+                } else {
+                    Author otherAuthor = new Author(authorAPI);
+                    authorRepository.save(otherAuthor); // Guarda al author
+                    authorFound.add(otherAuthor);
                 }
             }
-
+        }
         return authorFound;
     }
 
@@ -128,19 +125,21 @@ public class HomePage {
     public List<Book> saveBook(List<BookData> bookDataList, List<Author> authorList){
         var bookList = new ArrayList<Book>();
 
-        // Verifica si el libro existe o hay que agregarlo a la base de datos.
-        for(BookData bookAPI : bookDataList) {
-            Book bookReferent = null;
-            Optional<Book> existingBook = bookRepository.findByTitleContainsIgnoreCase(bookAPI.title());
+        if (bookDataList != null && !bookDataList.isEmpty() &&
+                authorList != null && !authorList.isEmpty()) {
 
-            if (existingBook.isPresent()) {
-                bookReferent = existingBook.get(); // Si existe, toma los datos.
-                bookList.add(bookReferent);
-            } else {
-                Book otherBook = new Book(bookAPI);
-                otherBook.setAuthor(authorList.get(0));
-                bookRepository.save(otherBook); // Sino, guarda el nuevo libro.
-                bookList.add(bookReferent);
+            for (BookData bookAPI : bookDataList) {
+
+                Optional<Book> existingBook = bookRepository.findByTitleContainsIgnoreCase(bookAPI.title());
+
+                if (existingBook.isPresent()) {
+                    bookList.add(existingBook.get()); // Si existe, toma los datos.
+                } else {
+                    Book otherBook = new Book(bookAPI);
+                    otherBook.setAuthor(authorList.get(0));
+                    bookRepository.save(otherBook); // Sino, guarda el nuevo libro.
+                    bookList.add(otherBook);
+                }
             }
         }
         
@@ -149,13 +148,13 @@ public class HomePage {
 
     // Métodos propios de la app.
     private void findBookByTitle() {
-        System.out.println("Ingrese 5 dígitos del nombre del libro: (ej: cinde = cinderella)");
+        System.out.println("Ingrese el nombre del libro:");
         var userBook = keyboard.nextLine();
 
-        data = ConsumingAPI(URL_SEARCH,userBook);
-        bookDataList = resultOfCosumingAPI(data,1);
+        data = ConsumingAPI(URL_SEARCH, userBook.substring(0, Math.min(userBook.length(), 5)));
+        bookDataList = resultOfCosumingAPI(data, 1);
         authorList = saveAuthor(bookDataList);
-        bookList = saveBook(bookDataList,authorList);
+        bookList = saveBook(bookDataList, authorList);
 
         System.out.println("Resultados de tu búsqueda:\n");
         bookList.forEach(System.out::println);
