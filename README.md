@@ -1,4 +1,5 @@
-[Literalura]: Biblioteca Virtual (Gutendex & PostgreSQL)
+![Blue Gold Elegant Minimalist Digital Marketer LinkedIn Banner](https://github.com/user-attachments/assets/c4216435-658f-47a4-86a4-d8c7f6287c90)
+
 
 ## :bowtie: Desarrolladora:
 
