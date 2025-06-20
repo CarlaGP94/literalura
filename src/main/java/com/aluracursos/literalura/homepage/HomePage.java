@@ -5,7 +5,6 @@ import com.aluracursos.literalura.repository.IAuthorRepository;
 import com.aluracursos.literalura.repository.IBookRepository;
 import com.aluracursos.literalura.service.APIConsumption;
 import com.aluracursos.literalura.service.ConvertsData;
-import org.antlr.v4.runtime.InputMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+// Esta es la 1er versión de la app, donde basa sus búsquedas en el consumo de la API y solamente tiene asociado la base de datos.
 
 @Service
 public class HomePage {
@@ -83,7 +83,7 @@ public class HomePage {
     }
 
     // Límite para el resultado del consumo de la API - n primeras coincidencias.
-    public List<BookData> resultOfCosumingAPI (GeneralData data,Integer limitList){
+    public List<BookData> resultOfCosunmingAPI(GeneralData data, Integer limitList){
         List<BookData> result = new ArrayList<>();
 
         // Siempre verifica primero que las listas no estén vacías o null.
@@ -130,7 +130,7 @@ public class HomePage {
 
             for (BookData bookAPI : bookDataList) {
 
-                Optional<Book> existingBook = bookRepository.findByTitleContainsIgnoreCase(bookAPI.title());
+                Optional<Book> existingBook = bookRepository.findByTitleEqualsIgnoreCase(bookAPI.title());
 
                 if (existingBook.isPresent()) {
                     bookList.add(existingBook.get()); // Si existe, toma los datos.
@@ -152,7 +152,7 @@ public class HomePage {
         var userBook = keyboard.nextLine();
 
         data = ConsumingAPI(URL_SEARCH, userBook.substring(0, Math.min(userBook.length(), 5)));
-        bookDataList = resultOfCosumingAPI(data, 1);
+        bookDataList = resultOfCosunmingAPI(data, 1);
         authorList = saveAuthor(bookDataList);
         bookList = saveBook(bookDataList, authorList);
 
@@ -183,7 +183,7 @@ public class HomePage {
         keyboard.nextLine();
 
         data = ConsumingAPI(URL_START_YEAR, startYear, URL_END_YEAR, endYear);
-        bookDataList = resultOfCosumingAPI(data,5);
+        bookDataList = resultOfCosunmingAPI(data,5);
         authorList = saveAuthor(bookDataList);
 
         System.out.println("Los autores seleccionados son:\n");
@@ -199,7 +199,7 @@ public class HomePage {
         var userLanguage = keyboard.nextLine();
 
         data = ConsumingAPI(URL_BASE,URL_LANGUAGES,userLanguage);
-        bookDataList = resultOfCosumingAPI(data,5);
+        bookDataList = resultOfCosunmingAPI(data,5);
         authorList = saveAuthor(bookDataList);
         bookList = saveBook(bookDataList, authorList);
 

@@ -8,9 +8,9 @@ public class Book {
     @Id // cada libro tendrá su ID único y será el parámetro para la estrategia de la tabla
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true) // los títulos no se repiten
+    @Column(unique = true, columnDefinition = "TEXT") // Evita nombres repetidos + Acepta longitudes largas de caracteres -> SQL: ALTER TABLE books ALTER COLUMN title TYPE TEXT;
     private String title;
-    @ManyToOne
+    @ManyToOne // muchos libros = un autor
     private Author author;
     @Enumerated(EnumType.STRING) // atributo del tipo Enum
     private Language language;

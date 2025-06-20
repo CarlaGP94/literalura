@@ -11,11 +11,11 @@ public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+    @Column(unique = true, columnDefinition = "TEXT") // Evita nombres repetidos + Acepta longitudes largas de caracteres -> SQL: ALTER TABLE authors ALTER COLUMN complete_name TYPE TEXT;
     private String completeName;
     private Integer birthYear;
     private Integer deathYear;
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.EAGER) // un autor = muchos libros
     private List<Book> booksList = new ArrayList<>();
 
     public List<Book> getBooks() {

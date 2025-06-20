@@ -3,9 +3,16 @@ package com.aluracursos.literalura.repository;
 import com.aluracursos.literalura.model.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface IBookRepository extends JpaRepository<Book,Long> {
 
-    Optional<Book> findByTitleContainsIgnoreCase(String userBook);
+    List<Book> findByTitleContainsIgnoreCase(String userBook);
+
+    // A partir de aquí los comandos pertenecen a la 2da versión.
+
+    // Muchos libros suelen tener diferentes ediciones, por lo que sus títulos se asemejan bastante;
+    // para guardar la variedad pero sin repeticiones, se agrega el "Equals".
+    Optional<Book> findByTitleEqualsIgnoreCase(String userBook);
 }

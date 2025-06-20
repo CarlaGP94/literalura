@@ -1,6 +1,7 @@
 package com.aluracursos.literalura;
 
 import com.aluracursos.literalura.homepage.HomePage;
+import com.aluracursos.literalura.homepage.NewHomePage;
 import com.aluracursos.literalura.repository.IAuthorRepository;
 import com.aluracursos.literalura.repository.IBookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,10 @@ public class LiteraluraApplication implements CommandLineRunner {
 	private IBookRepository bookRepository;
 	@Autowired
 	private IAuthorRepository authorRepository;
+//	@Autowired
+//	private HomePage homePage;
 	@Autowired
-	private HomePage homePage;
+	private NewHomePage newHomePage;
 
 	public static void main(String[] args) {
 		SpringApplication.run(LiteraluraApplication.class, args);
@@ -23,6 +26,8 @@ public class LiteraluraApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		homePage.showMenu();
+//		homePage.showMenu();
+		newHomePage.createDataBase();
+		newHomePage.showMenu();
 	}
 }
