@@ -15,6 +15,22 @@ public enum Language {
         this.ownLanguage = ownLanguage;
     }
 
+    public String getLanguageAPI() {
+        return languageAPI;
+    }
+
+    public void setLanguageAPI(String languageAPI) {
+        this.languageAPI = languageAPI;
+    }
+
+    public String getOwnLanguage() {
+        return ownLanguage;
+    }
+
+    public void setOwnLanguage(String ownLanguage) {
+        this.ownLanguage = ownLanguage;
+    }
+
     // String ==> "Language" (enum)
     public static Language fromString (String text) {
         try {

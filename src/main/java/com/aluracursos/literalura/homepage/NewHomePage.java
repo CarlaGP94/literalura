@@ -128,7 +128,7 @@ public class NewHomePage {
                 case 2 -> registeredBook();
                 case 3 -> registeredAuthors();
                 case 4 -> authorsLiveIn();
-                case 5 -> registeredBookByLenguage();
+                case 5 -> registeredBookByLanguage();
                 case 0 -> System.out.println("¡Gracias por usar nuestra aplicación!\n¡Hasta luego!\n");
                 default -> System.out.println("Opción inválida.");
             }
@@ -161,6 +161,7 @@ public class NewHomePage {
         System.out.println("Esta opción te permitirá buscar los autores activos dentro de un rango de años.\n" +
                 "Ej.: si quieres ver autores del siglo XX, ingresarás -> año de inicio 1900 - año de fin 1999.\n\n" +
                 "Ingrese el año de inicio:");
+
         var startYear = keyboard.nextInt();
         keyboard.nextLine();
 
@@ -176,6 +177,19 @@ public class NewHomePage {
         }
     }
 
-    private void registeredBookByLenguage() {
+    private void registeredBookByLanguage() {
+        System.out.println("Ingrese el idioma para la búsqueda:\n" +
+                "\"en\" para libros en inglés." +
+                "\n\"es\" para libros en español." +
+                "\n\"fr\" para libros en francés.");
+
+        var userLanguage = keyboard.nextLine();
+
+        var userLanguageInput = Language.fromString(userLanguage);
+
+        List<Book> foundBookLanguage = bookRepository.registeredBookByLanguage(userLanguageInput);
+
+        System.out.println("Filtrando libros por idioma...\n");
+        foundBookLanguage.forEach(System.out::println);
     }
 }

@@ -68,7 +68,7 @@ public class Book {
     public String toString() {
         return "Título: " + title +
                 "\nAutor: " + author.getCompleteName() +
-                "\nIdioma: " + language +
+                "\nIdioma: " + language.getOwnLanguage() +
                 "\nTotal de descargas: " + downloadCount +
                 "\n";
     }
