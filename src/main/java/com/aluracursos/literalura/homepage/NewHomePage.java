@@ -8,10 +8,7 @@ import com.aluracursos.literalura.service.ConvertsData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 // En esta segunda versión, el consumo de la API se hace una única vez y luego las búsquedas se basan en lo contenido en la base de datos.
 @Service
@@ -119,31 +116,38 @@ public class NewHomePage {
                     [5] Listar libros por idioma.\n
                     [0] Salir
                     """);
+            try {
+                exit = keyboard.nextInt();
+                keyboard.nextLine();
 
-            exit = keyboard.nextInt();
-            keyboard.nextLine();
-
-            switch (exit) {
-                case 1 -> findBookByTitle();
-                case 2 -> registeredBook();
-                case 3 -> registeredAuthors();
-                case 4 -> authorsLiveIn();
-                case 5 -> registeredBookByLanguage();
-                case 0 -> System.out.println("¡Gracias por usar nuestra aplicación!\n¡Hasta luego!\n");
-                default -> System.out.println("Opción inválida.");
+                switch (exit) {
+                    case 1 -> findBookByTitle();
+                    case 2 -> registeredBook();
+                    case 3 -> registeredAuthors();
+                    case 4 -> authorsLiveIn();
+                    case 5 -> registeredBookByLanguage();
+                    case 0 -> System.out.println("¡Gracias por usar nuestra aplicación!\n¡Hasta luego!\n");
+                    default -> System.out.println("Opción inválida."); // en caso de que ingrese un número fuera del rango.
+                }
+            } catch (InputMismatchException e){ // en caso de que ingrese uno o una cadena de caracteres.
+                System.out.println("Por favor, ingrese [números] únicamente.");
+                keyboard.nextLine();
             }
         }
     }
 
     private void findBookByTitle() {
+
         System.out.println("Ingrese el nombre del libro:");
         var userBook = keyboard.nextLine();
 
         List<Book> foundBook = bookRepository.findByTitleContainsIgnoreCase(userBook);
 
-        if(foundBook != null && !foundBook.isEmpty()){
+        if (foundBook != null && !foundBook.isEmpty()) {
             System.out.println("Resultado de la búsqueda:\n");
             foundBook.forEach(System.out::println);
+        } else {
+            System.out.println("No encontramos el libro.");
         }
     }
 
